@@ -1,0 +1,53 @@
+version: '3.2'
+
+volumes:
+  octoprint-docker:
+  octoprint-docker2:
+
+services:
+  octoprint1:
+    image: octoprint/octoprint
+    ports:
+      - 5000:5000
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    volumes:
+      - octoprint-docker:/home/octoprint/.octoprint
+    restart: always
+
+  streamer1:
+    build: .
+    ports:
+      - 8911:8080
+    devices:
+      - /dev/video0:/dev/video0
+    environment:
+      - MJPG_RES=640x480
+      - MJPG_FPS=25
+      - MJPG_USER=admin
+      - MJPG_PASS=adm1n
+    restart: always
+ 
+  octoprint2:
+    image: octoprint/octoprint
+    ports:
+      - 5001:5000
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    volumes:
+      - octoprint-docker2:/home/octoprint/.octoprint
+    restart: always
+
+  streamer2:
+    build: .
+    ports:
+      - 8912:8080
+    devices:
+      - /dev/video1:/dev/video0
+    environment:
+      - MJPG_RES=640x480
+      - MJPG_FPS=25
+      - MJPG_USER=admin
+      - MJPG_PASS=adm1n
+    restart: always
+
